@@ -23,12 +23,63 @@ const DonorRegisterPage = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!validate()) return;
+
+  try {
+    const res = await fetch("http://localhost:5000/api/donors", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name,
+        age: Number(form.age),
+        bloodGroup: form.bloodGroup,
+        city: form.city,
+        phone: form.phone,
+        lastDonationDate: form.lastDonation,
+        availability: form.available,
+      }),
+    });
+
+    // ✅ IMPORTANT: check response
+    if (!res.ok) {
+      throw new Error("Failed to register donor");
+    }
+
+    const data = await res.json();
+    console.log("Sending data:", {
+  name: form.name,
+  age: Number(form.age),
+  bloodGroup: form.bloodGroup,
+  city: form.city,
+  phone: form.phone,
+  lastDonationDate: form.lastDonation,
+  availability: form.available,
+});
+
     setSubmitted(true);
-    toast.success("Registration successful! Thank you for becoming a donor.");
-  };
+
+    // ✅ optional: reset form
+    setForm({
+      name: "",
+      age: "",
+      bloodGroup: "",
+      city: "",
+      phone: "",
+      lastDonation: "",
+      available: true,
+    });
+
+    toast.success("Donor registered successfully 🎉");
+  } catch (error) {
+    console.error(error);
+    toast.error("Error registering donor ❌");
+  }
+};
 
   if (submitted) {
     return (

@@ -1,10 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Users, FileText, Droplets, MapPin, Phone } from "lucide-react";
 import { DUMMY_DONORS, DUMMY_REQUESTS } from "@/lib/data";
 
 const AdminDashboard = () => {
   const [tab, setTab] = useState<"donors" | "requests">("donors");
+  const [donors, setDonors] = useState([]);
+useEffect(() => {
+  const fetchDonors = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/donors");
+      const data = await res.json();
+
+      // 🔥 merge dummy + real
+      setDonors([...DUMMY_DONORS, ...data]);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchDonors();
+}, []);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -42,8 +59,8 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {DUMMY_DONORS.map((d) => (
-                <tr key={d.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+              {donors.map((d, index) => (
+                <tr key={d.id || index} className="border-b border-border hover:bg-muted/50 transition-colors">
                   <td className="py-3 px-4 font-medium text-foreground">{d.name}</td>
                   <td className="py-3 px-4">
                     <span className="inline-flex items-center gap-1 bg-accent text-accent-foreground px-2 py-0.5 rounded-full text-xs font-medium">

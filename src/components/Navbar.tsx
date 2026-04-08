@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/" className="flex items-center gap-2 text-primary font-bold text-xl">
           <Heart className="w-6 h-6 fill-primary" />
-          <span>BloodConnect</span>
+          <span>LifeLink</span>
         </Link>
 
         {/* Desktop */}
